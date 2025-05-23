@@ -48,9 +48,8 @@ To get started, clone this repository to your local machine:
 
 ```bash
 git clone https://github.com/shivajid/gcp-vibe-code.git
-cd your-repository-directory # Change to the cloned directory
+cd gcp-vibe-code.git  # Change to the cloned directory
 ```
-Replace `YOUR_REPOSITORY_URL_HERE` with the actual URL of this repository and `your-repository-directory` with the name of the directory created by cloning.
 
 ## Setup and Workflow
 
