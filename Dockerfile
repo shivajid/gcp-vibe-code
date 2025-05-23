@@ -5,7 +5,7 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-COPY jax_mlp_flax_nnx.py /app/
+COPY src/jax_mlp_flax_nnx.py /app/
 
 # Install JAX with TPU support, Flax, Optax, and scikit-learn
 # This command fetches the appropriate jaxlib version for TPUs.

@@ -1,6 +1,6 @@
-# Explanation of the JAX MLP Script (`jax_mlp_flax_nnx.py`)
+# Explanation of the JAX MLP Script (`src/jax_mlp_flax_nnx.py`)
 
-This document provides a detailed explanation of the Python script [`jax_mlp_flax_nnx.py`](jax_mlp_flax_nnx.py:1), which implements and trains a Multi-Layer Perceptron (MLP) using JAX, Flax NNX, and Optax.
+This document provides a detailed explanation of the Python script [`src/jax_mlp_flax_nnx.py`](src/jax_mlp_flax_nnx.py:1), which implements and trains a Multi-Layer Perceptron (MLP) using JAX, Flax NNX, and Optax.
 
 ## Core Functionality
 
@@ -24,12 +24,12 @@ from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 import functools
 ```
-*   [`jax`](jax_mlp_flax_nnx.py:1) and [`jax.numpy`](jax_mlp_flax_nnx.py:2) (`jnp`): Core libraries for high-performance numerical computing, automatic differentiation (`jax.grad`), and JIT compilation (`jax.jit`).
-*   [`flax.experimental.nnx`](jax_mlp_flax_nnx.py:3): The experimental (now stable as `flax.nnx`) Flax Neural Network eXperimental API. It provides a more object-oriented and stateful way to define models compared to the "functional core" style of traditional Flax. This makes managing model parameters and static attributes more explicit.
-*   [`optax`](jax_mlp_flax_nnx.py:4): A gradient processing and optimization library for JAX. It provides a wide range of optimizers (like Adam, SGD) and tools for manipulating gradients.
-*   [`sklearn.datasets.make_classification`](jax_mlp_flax_nnx.py:5): Used to generate a synthetic dataset for a classification task, allowing for controlled experiments.
-*   [`sklearn.model_selection.train_test_split`](jax_mlp_flax_nnx.py:6): A utility to split the dataset into training and testing sets.
-*   [`functools`](jax_mlp_flax_nnx.py:7): Used for `functools.partial` to pre-fill arguments for the `jax.jit` decorator, making the `train_step` function cleaner.
+*   [`jax`](src/jax_mlp_flax_nnx.py:1) and [`jax.numpy`](src/jax_mlp_flax_nnx.py:2) (`jnp`): Core libraries for high-performance numerical computing, automatic differentiation (`jax.grad`), and JIT compilation (`jax.jit`).
+*   [`flax.experimental.nnx`](src/jax_mlp_flax_nnx.py:3): The experimental (now stable as `flax.nnx`) Flax Neural Network eXperimental API. It provides a more object-oriented and stateful way to define models compared to the "functional core" style of traditional Flax. This makes managing model parameters and static attributes more explicit.
+*   [`optax`](src/jax_mlp_flax_nnx.py:4): A gradient processing and optimization library for JAX. It provides a wide range of optimizers (like Adam, SGD) and tools for manipulating gradients.
+*   [`sklearn.datasets.make_classification`](src/jax_mlp_flax_nnx.py:5): Used to generate a synthetic dataset for a classification task, allowing for controlled experiments.
+*   [`sklearn.model_selection.train_test_split`](src/jax_mlp_flax_nnx.py:6): A utility to split the dataset into training and testing sets.
+*   [`functools`](src/jax_mlp_flax_nnx.py:7): Used for `functools.partial` to pre-fill arguments for the `jax.jit` decorator, making the `train_step` function cleaner.
 
 ### 2. MLP Definition (`MLP` class)
 
@@ -52,12 +52,12 @@ class MLP(nnx.Module):
         x = self.output_layer(x)
         return x
 ```
-*   Inherits from [`nnx.Module`](jax_mlp_flax_nnx.py:10), the base class for NNX models.
+*   Inherits from [`nnx.Module`](src/jax_mlp_flax_nnx.py:10), the base class for NNX models.
 *   The `__init__` method constructs the layers:
-    *   It iteratively creates [`nnx.Linear`](jax_mlp_flax_nnx.py:14) layers for the hidden part of the network.
-    *   An [`nnx.Rngs`](jax_mlp_flax_nnx.py:11) object is passed to initialize layer parameters. NNX makes PRNG key handling more explicit at the module level.
+    *   It iteratively creates [`nnx.Linear`](src/jax_mlp_flax_nnx.py:14) layers for the hidden part of the network.
+    *   An [`nnx.Rngs`](src/jax_mlp_flax_nnx.py:11) object is passed to initialize layer parameters. NNX makes PRNG key handling more explicit at the module level.
 *   The `__call__` method defines the forward pass:
-    *   Data `x` flows through each hidden layer followed by a ReLU activation ([`jax.nn.relu`](jax_mlp_flax_nnx.py:23)).
+    *   Data `x` flows through each hidden layer followed by a ReLU activation ([`jax.nn.relu`](src/jax_mlp_flax_nnx.py:23)).
     *   The final output layer produces the logits.
 
 ### 3. Synthetic Data Generation (`generate_synthetic_data`)
@@ -68,8 +68,8 @@ def generate_synthetic_data(n_samples=200, n_features=2, n_classes=2, random_sta
     y_one_hot = jax.nn.one_hot(y, num_classes=n_classes)
     return jnp.array(X), jnp.array(y_one_hot), jnp.array(y)
 ```
-*   Uses [`make_classification`](jax_mlp_flax_nnx.py:30) from `scikit-learn` for simplicity and reproducibility.
-*   Converts labels `y` to one-hot encoding using [`jax.nn.one_hot`](jax_mlp_flax_nnx.py:40) as this is often required for categorical cross-entropy loss.
+*   Uses [`make_classification`](src/jax_mlp_flax_nnx.py:30) from `scikit-learn` for simplicity and reproducibility.
+*   Converts labels `y` to one-hot encoding using [`jax.nn.one_hot`](src/jax_mlp_flax_nnx.py:40) as this is often required for categorical cross-entropy loss.
 *   Returns JAX arrays (`jnp.array`).
 
 ### 4. Training Loop Components
@@ -79,14 +79,14 @@ def generate_synthetic_data(n_samples=200, n_features=2, n_classes=2, random_sta
     def cross_entropy_loss(logits, labels_one_hot):
         return -jnp.sum(labels_one_hot * jax.nn.log_softmax(logits), axis=-1).mean()
     ```
-    A standard cross-entropy loss implementation suitable for multi-class classification. It uses [`jax.nn.log_softmax`](jax_mlp_flax_nnx.py:46) for numerical stability.
+    A standard cross-entropy loss implementation suitable for multi-class classification. It uses [`jax.nn.log_softmax`](src/jax_mlp_flax_nnx.py:46) for numerical stability.
 
 *   **Optimizer (`get_optimizer`)**:
     ```python
     def get_optimizer(learning_rate=1e-3):
         return optax.adam(learning_rate)
     ```
-    Returns an Adam optimizer instance from [`optax.adam`](jax_mlp_flax_nnx.py:50).
+    Returns an Adam optimizer instance from [`optax.adam`](src/jax_mlp_flax_nnx.py:50).
 
 *   **Training Step (`train_step`)**:
     ```python
@@ -102,13 +102,13 @@ def generate_synthetic_data(n_samples=200, n_features=2, n_classes=2, random_sta
         new_params = optax.apply_updates(params, updates) # Apply updates
         return new_params, new_opt_state, loss_val
     ```
-    *   **JIT Compilation**: Decorated with [`jax.jit`](jax_mlp_flax_nnx.py:53) for performance. `loss_fn` and `optimizer_update_fn` are marked as `static_argnames` because their Python functions are part of the computation graph's structure, not dynamic JAX array inputs.
+    *   **JIT Compilation**: Decorated with [`jax.jit`](src/jax_mlp_flax_nnx.py:53) for performance. `loss_fn` and `optimizer_update_fn` are marked as `static_argnames` because their Python functions are part of the computation graph's structure, not dynamic JAX array inputs.
     *   **NNX State Handling**:
-        *   NNX models are split into trainable `params` (e.g., weights, biases) and `static` parts (e.g., layer structure, non-trainable attributes) using [`nnx.split()`](jax_mlp_flax_nnx.py:103).
-        *   Inside `loss_for_grad`, the model is temporarily reconstructed using [`nnx.merge(current_params, static)`](jax_mlp_flax_nnx.py:57) to perform the forward pass. This is crucial because JAX transformations like `jax.grad` operate on functions of JAX arrays (the `params`).
-    *   **Gradient Calculation**: [`jax.value_and_grad`](jax_mlp_flax_nnx.py:61) computes both the loss and the gradients with respect to `params`.
-    *   **Optimizer Update**: The optimizer's `update` function ([`optimizer.update`](jax_mlp_flax_nnx.py:130)) calculates parameter updates from gradients and the current optimizer state.
-    *   **Parameter Update**: [`optax.apply_updates`](jax_mlp_flax_nnx.py:63) applies these updates to the parameters.
+        *   NNX models are split into trainable `params` (e.g., weights, biases) and `static` parts (e.g., layer structure, non-trainable attributes) using [`nnx.split()`](src/jax_mlp_flax_nnx.py:103).
+        *   Inside `loss_for_grad`, the model is temporarily reconstructed using [`nnx.merge(current_params, static)`](src/jax_mlp_flax_nnx.py:57) to perform the forward pass. This is crucial because JAX transformations like `jax.grad` operate on functions of JAX arrays (the `params`).
+    *   **Gradient Calculation**: [`jax.value_and_grad`](src/jax_mlp_flax_nnx.py:61) computes both the loss and the gradients with respect to `params`.
+    *   **Optimizer Update**: The optimizer's `update` function ([`optimizer.update`](src/jax_mlp_flax_nnx.py:130)) calculates parameter updates from gradients and the current optimizer state.
+    *   **Parameter Update**: [`optax.apply_updates`](src/jax_mlp_flax_nnx.py:63) applies these updates to the parameters.
 
 *   **Prediction Function (`predict`)**:
     ```python
@@ -122,37 +122,37 @@ def generate_synthetic_data(n_samples=200, n_features=2, n_classes=2, random_sta
 ### 5. Main Execution Block (`if __name__ == "__main__":`)
 
 *   **Configuration**: Sets hyperparameters like learning rate, epochs, batch size, etc.
-*   **PRNG Keys**: Initializes JAX PRNG keys ([`jax.random.PRNGKey`](jax_mlp_flax_nnx.py:81)) and splits them for different purposes (data generation, model initialization, shuffling). JAX requires explicit PRNG key management.
+*   **PRNG Keys**: Initializes JAX PRNG keys ([`jax.random.PRNGKey`](src/jax_mlp_flax_nnx.py:81)) and splits them for different purposes (data generation, model initialization, shuffling). JAX requires explicit PRNG key management.
 *   **Data Preparation**:
-    *   Calls [`generate_synthetic_data`](jax_mlp_flax_nnx.py:85).
-    *   Splits data into training and test sets using [`train_test_split`](jax_mlp_flax_nnx.py:88).
+    *   Calls [`generate_synthetic_data`](src/jax_mlp_flax_nnx.py:85).
+    *   Splits data into training and test sets using [`train_test_split`](src/jax_mlp_flax_nnx.py:88).
 *   **Model Initialization**:
     *   An MLP instance is created: `model = MLP(...)`.
-    *   A "dry run" `_ = model(dummy_x)` ([`jax_mlp_flax_nnx.py:100`](jax_mlp_flax_nnx.py:100)) is performed. This is a common pattern in NNX (and stateful Flax) to ensure all layers are built and parameters are initialized before they are accessed or split.
-    *   The model is split: `params, static = nnx.split(model)` ([`jax_mlp_flax_nnx.py:103`](jax_mlp_flax_nnx.py:103)).
-*   **Optimizer Initialization**: `opt_state = optimizer.init(params)` ([`jax_mlp_flax_nnx.py:106`](jax_mlp_flax_nnx.py:106)). The optimizer state is initialized based on the model's trainable parameters.
+    *   A "dry run" `_ = model(dummy_x)` ([`src/jax_mlp_flax_nnx.py:100`](src/jax_mlp_flax_nnx.py:100)) is performed. This is a common pattern in NNX (and stateful Flax) to ensure all layers are built and parameters are initialized before they are accessed or split.
+    *   The model is split: `params, static = nnx.split(model)` ([`src/jax_mlp_flax_nnx.py:103`](src/jax_mlp_flax_nnx.py:103)).
+*   **Optimizer Initialization**: `opt_state = optimizer.init(params)` ([`src/jax_mlp_flax_nnx.py:106`](src/jax_mlp_flax_nnx.py:106)). The optimizer state is initialized based on the model's trainable parameters.
 *   **Training Loop**:
     *   Iterates for a specified number of `EPOCHS`.
-    *   Shuffles training data in each epoch using [`jax.random.permutation`](jax_mlp_flax_nnx.py:114).
+    *   Shuffles training data in each epoch using [`jax.random.permutation`](src/jax_mlp_flax_nnx.py:114).
     *   Iterates through batches of data.
     *   Calls the `train_step` function to update model parameters and optimizer state.
     *   Prints average loss periodically.
 *   **Evaluation**:
     *   Calls the `predict` function on the test set.
-    *   Calculates accuracy by comparing predicted classes ([`jnp.argmax`](jax_mlp_flax_nnx.py:140)) with true labels.
+    *   Calculates accuracy by comparing predicted classes ([`jnp.argmax`](src/jax_mlp_flax_nnx.py:140)) with true labels.
 
 ## Rationale for Package Choices
 
 *   **JAX (`jax`, `jax.numpy`)**:
     *   **High Performance**: JAX can compile Python functions (via XLA) to run very efficiently on accelerators like GPUs and TPUs.
-    *   **Automatic Differentiation**: [`jax.grad`](jax_mlp_flax_nnx.py:61) is fundamental for training neural networks, as it automatically computes gradients of the loss function with respect to model parameters.
+    *   **Automatic Differentiation**: [`jax.grad`](src/jax_mlp_flax_nnx.py:61) is fundamental for training neural networks, as it automatically computes gradients of the loss function with respect to model parameters.
     *   **Functional Programming Paradigm**: JAX encourages a functional style (pure functions), which simplifies reasoning about code and is well-suited for transformations like JIT compilation and parallelization (`jax.pmap`, `jax.vmap`).
     *   **NumPy API**: `jax.numpy` provides a familiar NumPy-like API, making it easier for users with NumPy experience to adopt JAX.
 
 *   **Flax (`flax.experimental.nnx` or `flax.nnx`)**:
     *   **Neural Network Library for JAX**: Flax is the primary neural network library for JAX, providing tools for building and training models.
     *   **NNX API**: The NNX API was chosen here because it offers a more stateful, object-oriented approach to defining models.
-        *   **Explicit State Management**: Parameters (`params`) and static graph structure (`static`) are explicitly managed using [`nnx.split`](jax_mlp_flax_nnx.py:103) and [`nnx.merge`](jax_mlp_flax_nnx.py:57). This makes it clearer what parts of the model are trainable and how state is handled within JAX's functional paradigm, especially when working with optimizers like Optax that expect parameters as explicit inputs.
+        *   **Explicit State Management**: Parameters (`params`) and static graph structure (`static`) are explicitly managed using [`nnx.split`](src/jax_mlp_flax_nnx.py:103) and [`nnx.merge`](src/jax_mlp_flax_nnx.py:57). This makes it clearer what parts of the model are trainable and how state is handled within JAX's functional paradigm, especially when working with optimizers like Optax that expect parameters as explicit inputs.
         *   **Pythonic Feel**: For developers accustomed to PyTorch or Keras, NNX can feel more intuitive as model layers are attributes of the model class.
         *   **Compatibility with JAX Transformations**: Despite being stateful, NNX is designed to work seamlessly with `jax.jit`, `jax.grad`, etc., by providing these mechanisms to separate and re-merge state.
 
@@ -164,8 +164,8 @@ def generate_synthetic_data(n_samples=200, n_features=2, n_classes=2, random_sta
 
 *   **Scikit-learn (`sklearn`)**:
     *   **Data Utilities**: `scikit-learn` is a mature and widely used machine learning library in Python.
-    *   **Synthetic Data Generation**: [`make_classification`](jax_mlp_flax_nnx.py:30) is a convenient way to create simple, reproducible datasets for testing and demonstration without needing external data files.
-    *   **Data Splitting**: [`train_test_split`](jax_mlp_flax_nnx.py:88) is a standard utility for dividing data into training and testing sets, crucial for evaluating model generalization.
+    *   **Synthetic Data Generation**: [`make_classification`](src/jax_mlp_flax_nnx.py:30) is a convenient way to create simple, reproducible datasets for testing and demonstration without needing external data files.
+    *   **Data Splitting**: [`train_test_split`](src/jax_mlp_flax_nnx.py:88) is a standard utility for dividing data into training and testing sets, crucial for evaluating model generalization.
     *   While JAX could be used for these, `scikit-learn` provides these off-the-shelf, saving development time for these common preprocessing tasks.
 
 This combination of libraries provides a powerful and flexible environment for developing and training high-performance neural networks in Python, with JAX at the core for computation, Flax NNX for model definition, Optax for optimization, and Scikit-learn for data utilities.

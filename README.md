@@ -20,16 +20,18 @@ This project is ideal for anyone looking to understand the practical steps invol
 ├── Dockerfile
 ├── JAX_MLP_EXPLAINED.md
 ├── README.md
-├── jax_mlp_flax_nnx.py
-└── jax_mlp_flax_nnx_colab.ipynb
+├── notebooks
+│   └── jax_mlp_flax_nnx_colab.ipynb
+└── src
+    └── jax_mlp_flax_nnx.py
 ```
 
 ## Key Files
 
-*   **[`jax_mlp_flax_nnx.py`](jax_mlp_flax_nnx.py:1):** The core Python script containing the JAX MLP model definition (using Flax NNX), data generation, training loop, and evaluation logic.
+*   **[`src/jax_mlp_flax_nnx.py`](src/jax_mlp_flax_nnx.py:1):** The core Python script containing the JAX MLP model definition (using Flax NNX), data generation, training loop, and evaluation logic.
 *   **[`Dockerfile`](Dockerfile:1):** Defines the Docker image for running the JAX application, including all necessary dependencies.
-*   **[`JAX_MLP_EXPLAINED.md`](JAX_MLP_EXPLAINED.md:1):** A detailed explanation of the `jax_mlp_flax_nnx.py` script, including the rationale behind package choices.
-*   **[`jax_mlp_flax_nnx_colab.ipynb`](jax_mlp_flax_nnx_colab.ipynb:1):** A Google Colab notebook version of the script, adapted for easy execution and experimentation on Colab TPUs.
+*   **[`JAX_MLP_EXPLAINED.md`](JAX_MLP_EXPLAINED.md:1):** A detailed explanation of the `src/jax_mlp_flax_nnx.py` script, including the rationale behind package choices.
+*   **[`notebooks/jax_mlp_flax_nnx_colab.ipynb`](notebooks/jax_mlp_flax_nnx_colab.ipynb:1):** A Google Colab notebook version of the script, adapted for easy execution and experimentation on Colab TPUs.
 *   **[`README.md`](README.md:1):** This file – providing setup instructions and an overview of the project.
 
 ## Prerequisites
