@@ -42,6 +42,16 @@ Before you begin, ensure you have the following installed and configured:
 *   **(Optional but Recommended) GitHub CLI (`gh`)**: [Installation Guide](https://github.com/cli/cli#installation)
     *   Ensure you are authenticated: `gh auth login`
 
+### Clone This Repository
+
+To get started, clone this repository to your local machine:
+
+```bash
+git clone YOUR_REPOSITORY_URL_HERE
+cd your-repository-directory # Change to the cloned directory
+```
+Replace `YOUR_REPOSITORY_URL_HERE` with the actual URL of this repository and `your-repository-directory` with the name of the directory created by cloning.
+
 ## Setup and Workflow
 
 **Important:** Replace placeholder values like `YOUR_PROJECT_ID` with your actual details in the commands below or by setting the environment variables.
@@ -93,7 +103,15 @@ gcloud compute tpus tpu-vm create "${TPU_NAME}" \
   --version="${TPU_RUNTIME_VERSION}"
 ```
 
-### 4. Build and Push Docker Image
+### 4. (Optional) List TPUs
+
+To check the status and details of your TPU VMs:
+
+```bash
+gcloud compute tpus tpu-vm list --project="${PROJECT_ID}" --zone="${ZONE}"
+```
+
+### 5. Build and Push Docker Image
 
 Package your application into a Docker image and push it to your Artifact Registry.
 
@@ -103,7 +121,7 @@ gcloud builds submit . \
   --tag="${AR_DOCKER_IMAGE_PATH}"
 ```
 
-### 5. Run Training on TPU VM
+### 6. Run Training on TPU VM
 
 SSH into the TPU VM and execute the Docker container.
 
@@ -149,13 +167,6 @@ Training finished.
 
 Test Accuracy: 0.2600
 
-```
-### 6. (Optional) List TPUs
-
-To check the status and details of your TPU VMs:
-
-```bash
-gcloud compute tpus tpu-vm list --project="${PROJECT_ID}" --zone="${ZONE}"
 ```
 
 ## Important Notes
