@@ -149,15 +149,6 @@ Training finished.
 
 Test Accuracy: 0.2600
 
-To run this code:
-1. Ensure you have JAX, Flax (for NNX), Optax, and scikit-learn installed:
-   pip install jax jaxlib flax optax scikit-learn
-   (Note: flax.experimental.nnx is part of the main flax package)
-2. Save the code as a Python file (e.g., jax_mlp_flax_nnx.py).
-3. Run from the terminal: python jax_mlp_flax_nnx.py
-
-Note: For TPU training, ensure your JAX installation is configured for TPUs.
-The use of jax.jit helps in compiling functions for efficient execution on accelerators.
 ```
 ### 6. (Optional) List TPUs
 
