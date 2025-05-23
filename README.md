@@ -125,6 +125,40 @@ gcloud compute tpus tpu-vm ssh "${TPU_NAME}" \
 *   `--worker=all`: Ensures the command runs on all workers if it's a Pod. For single TPUs, it targets the main worker.
 *   `--shm-size=1g`: Allocates shared memory to the Docker container, which can be important for some JAX/XLA operations.
 
+### Example Successful Output
+
+```
+WARNING:absl:Using 'flax.experimental.nnx' is deprecated. Please use 'flax.nnx' instead.
+X_train shape: (400, 4), y_train_one_hot shape: (400, 3)
+X_test shape: (100, 4), y_test_one_hot shape: (100, 3)
+Number of classes: 3
+
+Starting training for 100 epochs...
+Epoch 1/100, Avg Loss: 1.2975
+Epoch 10/100, Avg Loss: 1.3104
+Epoch 20/100, Avg Loss: 1.2985
+Epoch 30/100, Avg Loss: 1.3112
+Epoch 40/100, Avg Loss: 1.2920
+Epoch 50/100, Avg Loss: 1.2994
+Epoch 60/100, Avg Loss: 1.3115
+Epoch 70/100, Avg Loss: 1.2941
+Epoch 80/100, Avg Loss: 1.3070
+Epoch 90/100, Avg Loss: 1.3098
+Epoch 100/100, Avg Loss: 1.3041
+Training finished.
+
+Test Accuracy: 0.2600
+
+To run this code:
+1. Ensure you have JAX, Flax (for NNX), Optax, and scikit-learn installed:
+   pip install jax jaxlib flax optax scikit-learn
+   (Note: flax.experimental.nnx is part of the main flax package)
+2. Save the code as a Python file (e.g., jax_mlp_flax_nnx.py).
+3. Run from the terminal: python jax_mlp_flax_nnx.py
+
+Note: For TPU training, ensure your JAX installation is configured for TPUs.
+The use of jax.jit helps in compiling functions for efficient execution on accelerators.
+```
 ### 6. (Optional) List TPUs
 
 To check the status and details of your TPU VMs:
